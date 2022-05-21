@@ -17,6 +17,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/book', function () {
-    return view('welcome');
-});
+Route::post('/books',[ \App\Http\Controllers\BooksController::class, 'store']);
