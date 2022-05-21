@@ -13,11 +13,7 @@ class BooksManagementTest extends TestCase
     /** @test */
     public function can_add_a_book()
     {
-//        $this->withoutExceptionHandling();
-        $response = $this->post('/books', [
-            'title'=>'testing book',
-            'author'=>'nadim',
-        ]);
+        $response = $this->post('/books', $this->validData());
 
         $book = Book::first();
 
@@ -27,25 +23,13 @@ class BooksManagementTest extends TestCase
     }
 
     /** @test */
-    public function a_title_is_required()
+    public function field_required()
     {
-        $response = $this->post('/books', [
-            'title'=>'',
-            'author'=>'nadim',
-        ]);
-
-        $response->assertSessionHasErrors('title');
-    }
-
-    /** @test */
-    public function an_author_is_required()
-    {
-        $response = $this->post('/books', [
-            'title'=>'testing book',
-            'author'=>'',
-        ]);
-
-        $response->assertSessionHasErrors('author');
+        collect(['title','author'])->each(function($field) {
+            $response = $this->post('/books', array_merge($this->validData(), [$field => '']));
+            $response->assertSessionHasErrors($field);
+            $this->assertCount(0, Book::all());
+        });
     }
 
     /** @test */
@@ -83,4 +67,12 @@ class BooksManagementTest extends TestCase
         $this->assertCount(0, Book::all());
         $response->assertRedirect('/books/' . $book->id);
     }
+
+    private function validData() {
+        return [
+            'title'=>'testing book',
+            'author'=>'nadim',
+        ];
+    }
 }
+
