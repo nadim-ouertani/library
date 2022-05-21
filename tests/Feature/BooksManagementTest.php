@@ -9,7 +9,7 @@ use Tests\TestCase;
 class BooksManagementTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     /** @test */
     public function can_add_a_book()
     {
