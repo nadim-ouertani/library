@@ -32,6 +32,23 @@ class BooksManagementTest extends TestCase
         $response->assertOk();
     }
 
+    /** @test */
+    public function any_one_can_see_a_specific_books()
+    {
+        $this->withoutExceptionHandling();
+        $book = Book::factory()->create();
+        $response = $this->get('api' . $book->path());
+        $response->assertJson([
+            "id"=> $book->id,
+            "title"=> $book->title,
+            "author"=> $book->author,
+            "year"=> $book->year,
+            "created_at"=> $book->created_at->jsonSerialize(),
+            "updated_at"=> $book->updated_at->jsonSerialize(),
+        ]);
+        $response->assertOk();
+    }
+
 //Admin book management
     /** @test */
     public function admin_can_add_a_book()
