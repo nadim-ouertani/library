@@ -34,4 +34,12 @@ you need to add your database in the .env file
 
 `<server name="DB_DATABASE" value=":memory:"/>`
 
+## Install vue3 to the application
+
+- **install vue using the following command in your server**:
+
+`npm install --save vue@next && npm install --save-dev vue-loader@next`
+
+- **Don't forget to prepare your mix and implement the necessary codes** 
+
 
