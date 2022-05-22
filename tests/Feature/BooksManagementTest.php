@@ -106,7 +106,7 @@ class BooksManagementTest extends TestCase
         $this->withoutExceptionHandling();
         $this->actingAs($this->user);
 
-        $book = Book::factory(3)->create();
+        Book::factory(3)->create();
 
         $response = $this->get('/books');
         $response->assertJsonCount(3);
@@ -180,7 +180,7 @@ class BooksManagementTest extends TestCase
         });
     }
 //Helper
-    private function validData() {
+    private function validData() :array {
         return [
             'title'=>'testing book',
             'author'=>'nadim',
