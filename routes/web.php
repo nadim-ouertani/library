@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/books',[ \App\Http\Controllers\BooksController::class, 'show']);
+Route::get('/books/{book}',[ \App\Http\Controllers\BooksController::class, 'show_a_book']);
 Route::post('/books',[ \App\Http\Controllers\BooksController::class, 'store']);
 Route::patch('/books/{book}',[ \App\Http\Controllers\BooksController::class, 'update']);
 Route::delete('/books/{book}',[ \App\Http\Controllers\BooksController::class, 'destroy']);

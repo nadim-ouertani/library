@@ -21,6 +21,7 @@ class BooksManagementTest extends TestCase
         $this->user = User::factory()->create();
     }
 
+//Admin book management
     /** @test */
     public function admin_can_add_a_book()
     {
@@ -62,17 +63,7 @@ class BooksManagementTest extends TestCase
         $response->assertRedirect('/books');
     }
 
-    /** @test */
-    public function field_required()
-    {
-        $this->actingAs($this->admin);
-        collect(['title','author', 'year'])->each(function($field) {
-            $response = $this->post('/books', array_merge($this->validData(), [$field => '']));
-            $response->assertSessionHasErrors($field);
-            $this->assertCount(0, Book::all());
-        });
-    }
-
+//Only admin can manage the books
     /** @test */
     public function only_admin_can_add_a_book()
     {
@@ -108,17 +99,87 @@ class BooksManagementTest extends TestCase
 
     }
 
-    /** test */
+//Authorized user can get book/ books && checkin/ checkout books
+    /** @test */
+    public function authorized_user_can_see_all_books()
+    {
+        $this->withoutExceptionHandling();
+        $this->actingAs($this->user);
+
+        $book = Book::factory(3)->create();
+
+        $response = $this->get('/books');
+        $response->assertJsonCount(3);
+        $response->assertOk();
+    }
+    /** @test */
+    public function authorized_user_can_see_a_specific_book()
+    {
+        $this->withoutExceptionHandling();
+        $this->actingAs($this->user);
+
+        $book = Book::factory()->create();
+        $response = $this->get($book->path());
+        $response->assertJson([
+            "id"=> $book->id,
+            "title"=> $book->title,
+            "author"=> $book->author,
+            "year"=> $book->year,
+            "created_at"=> $book->created_at->jsonSerialize(),
+            "updated_at"=> $book->updated_at->jsonSerialize(),
+        ]);
+        $response->assertOk();
+    }
+    /** TODO */
     public function authorized_user_can_checkout_book()
     {
 
     }
-    /** test */
+    /** TODO */
     public function authorized_user_can_checkin_book()
     {
 
     }
 
+//Only authorized user can get book/ books
+    /** @test */
+    public function only_authorized_user_can_see_all_books()
+    {
+        Book::factory(3)->create();
+        $response = $this->get('/books');
+        $response->assertUnauthorized();
+    }
+    /** @test */
+    public function only_authorized_user_can_see_a_specific_book()
+    {
+        $book = Book::factory()->create();
+        $response = $this->get($book->path());
+        $response->assertUnauthorized();
+    }
+    /** TODO */
+    public function only_authorized_user_can_checkout_book()
+    {
+
+    }
+    /** TODO */
+    public function only_authorized_user_can_checkin_book()
+    {
+
+    }
+
+
+//Required data
+    /** @test */
+    public function field_required()
+    {
+        $this->actingAs($this->admin);
+        collect(['title','author', 'year'])->each(function($field) {
+            $response = $this->post('/books', array_merge($this->validData(), [$field => '']));
+            $response->assertSessionHasErrors($field);
+            $this->assertCount(0, Book::all());
+        });
+    }
+//Helper
     private function validData() {
         return [
             'title'=>'testing book',
