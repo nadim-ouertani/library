@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome.blade.bk.php');
 });
 
 Route::post('/books',[ \App\Http\Controllers\BooksController::class, 'store']);
