@@ -5,7 +5,7 @@
 <script>
 export default {
     setup: () => ({
-        title: 'welcome component'
+        title: 'welcome component, a new push!'
     })
 }
 </script>
