@@ -21,6 +21,17 @@ class BooksManagementTest extends TestCase
         $this->user = User::factory()->create();
     }
 
+    // Any one can see books
+    /** @test */
+    public function any_one_can_see_books()
+    {
+        $this->withoutExceptionHandling();
+        Book::factory(3)->create();
+        $response = $this->get('api/books');
+        $response->assertJsonCount(3);
+        $response->assertOk();
+    }
+
 //Admin book management
     /** @test */
     public function admin_can_add_a_book()

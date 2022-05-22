@@ -9,11 +9,12 @@ class BooksController extends Controller
 {
     public function show()
     {
-        if (Auth::check()) {
-            return response (Book::all(), '200');
-        } else {
-            return response (null,'401');
-        }
+        return response (Book::all(), '200');
+//        if (Auth::check()) {
+//            return response (Book::all(), '200');
+//        } else {
+//            return response (null,'401');
+//        }
     }
 
     public function show_a_book(Book $book)
