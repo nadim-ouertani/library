@@ -9,7 +9,7 @@ class BooksController extends Controller
 {
     public function show()
     {
-//        return response (Book::all(), '200');
+//        return response (Book::all(), '200'); Removed
         if (Auth::check()) {
             return response (Book::all(), '200');
         } else {
