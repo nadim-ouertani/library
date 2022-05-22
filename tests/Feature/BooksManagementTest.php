@@ -28,22 +28,22 @@ class BooksManagementTest extends TestCase
         $this->actingAs($this->admin);
 
         $this->assertEquals('admin', $this->admin->role);
-        $response = $this->post('/books', $this->validData());
+        $response = $this->post('api/books', $this->validData());
         $book = Book::first();
 
         $this->assertCount(1, Book::all());
-        $response->assertRedirect($book->path());
+        $response->assertRedirect('api' . $book->path());
 
     }
     /** @test */
     public function admin_can_update_a_book()
     {
         $this->actingAs($this->admin);
-        $this->post('/books', $this->validData());
+        $this->post('api/books', $this->validData());
         $book = Book::first();
 
         $this->assertEquals('admin', $this->admin->role);
-        $response = $this->patch($book->path(),array_merge($this->validData(), ['title'=> 'Updated title', 'author' => 'Updated author']));
+        $response = $this->patch('api' . $book->path(),array_merge($this->validData(), ['title'=> 'Updated title', 'author' => 'Updated author']));
         $this->assertEquals('Updated title', Book::first()->title);
         $this->assertEquals('Updated author', Book::first()->author);
         $response->assertRedirect($book->fresh()->path());
@@ -52,15 +52,15 @@ class BooksManagementTest extends TestCase
     public function admin_can_delete_a_book()
     {
         $this->actingAs($this->admin);
-        $this->post('/books', $this->validData());
+        $this->post('api/books', $this->validData());
         $book = Book::first();
 
         $this->assertEquals('admin', $this->admin->role);
         $this->assertCount(1, Book::all());
 
-        $response = $this->delete($book->path());
+        $response = $this->delete('api' . $book->path());
         $this->assertCount(0, Book::all());
-        $response->assertRedirect('/books');
+        $response->assertRedirect('api/books');
     }
 
 //Only admin can manage the books
@@ -68,7 +68,7 @@ class BooksManagementTest extends TestCase
     public function only_admin_can_add_a_book()
     {
         $this->actingAs($this->user);
-        $response = $this->post('/books', $this->validData());
+        $response = $this->post('api/books', $this->validData());
 
         $this->assertEquals('user', $this->user->role);
         $this->assertCount(0, Book::all());
@@ -81,7 +81,7 @@ class BooksManagementTest extends TestCase
         $book = Book::factory()->create($this->validData());
         $this->actingAs($this->user);
         $this->assertEquals('user', $this->user->role);
-        $response = $this->patch($book->path(),array_merge($this->validData(), ['title'=> 'Updated title', 'author' => 'Updated author']));
+        $response = $this->patch('api' . $book->path(),array_merge($this->validData(), ['title'=> 'Updated title', 'author' => 'Updated author']));
         $this->assertNotEquals('Updated title', Book::first()->title);
         $this->assertNotEquals('Updated author', Book::first()->author);
         $response->assertUnauthorized();
@@ -93,7 +93,7 @@ class BooksManagementTest extends TestCase
         $book = Book::factory()->create($this->validData());
         $this->actingAs($this->user);
         $this->assertEquals('user', $this->user->role);
-        $response = $this->delete($book->path());
+        $response = $this->delete('api' . $book->path());
         $this->assertCount(1, Book::all());
         $response->assertUnauthorized();
 
@@ -108,7 +108,7 @@ class BooksManagementTest extends TestCase
 
         Book::factory(3)->create();
 
-        $response = $this->get('/books');
+        $response = $this->get('api/books');
         $response->assertJsonCount(3);
         $response->assertOk();
     }
@@ -119,7 +119,7 @@ class BooksManagementTest extends TestCase
         $this->actingAs($this->user);
 
         $book = Book::factory()->create();
-        $response = $this->get($book->path());
+        $response = $this->get('api' . $book->path());
         $response->assertJson([
             "id"=> $book->id,
             "title"=> $book->title,
@@ -146,14 +146,14 @@ class BooksManagementTest extends TestCase
     public function only_authorized_user_can_see_all_books()
     {
         Book::factory(3)->create();
-        $response = $this->get('/books');
+        $response = $this->get('api/books');
         $response->assertUnauthorized();
     }
     /** @test */
     public function only_authorized_user_can_see_a_specific_book()
     {
         $book = Book::factory()->create();
-        $response = $this->get($book->path());
+        $response = $this->get('api' . $book->path());
         $response->assertUnauthorized();
     }
     /** TODO */
@@ -174,7 +174,7 @@ class BooksManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
         collect(['title','author', 'year'])->each(function($field) {
-            $response = $this->post('/books', array_merge($this->validData(), [$field => '']));
+            $response = $this->post('api/books', array_merge($this->validData(), [$field => '']));
             $response->assertSessionHasErrors($field);
             $this->assertCount(0, Book::all());
         });

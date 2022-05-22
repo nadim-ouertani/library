@@ -28,7 +28,7 @@ class BooksController extends Controller
     public function store()
     {
         if (Auth::user()->role == 'admin')
-            return redirect(Book::create($this->validateRequest())->path());
+            return redirect('api' . Book::create($this->validateRequest())->path());
 
         return response(null, '401');
     }
@@ -47,7 +47,7 @@ class BooksController extends Controller
     {
         if (Auth::user()->role == 'admin') {
             $book->delete();
-            return redirect('/books');
+            return redirect('api/books');
         } else {
             return response(null, '401');
         }
