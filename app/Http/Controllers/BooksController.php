@@ -3,25 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use Illuminate\Support\Facades\Auth;
 
 class BooksController extends Controller
 {
     public function store()
     {
-        $book = Book::create($this->validateRequest());
-        return redirect($book->path());
+        if (Auth::user()->role == 'admin')
+            return redirect(Book::create($this->validateRequest())->path());
+
+        return response(null, '401');
     }
 
     public function update(Book $book)
     {
-        $book->update($this->validateRequest());
-        return redirect($book->path());
+        if (Auth::user()->role == 'admin') {
+            $book->update($this->validateRequest());
+            return redirect($book->path());
+        } else {
+            return response(null, '401');
+        }
     }
 
     public function destroy(Book $book)
     {
-        $book->delete();
-        return redirect('/books');
+        if (Auth::user()->role == 'admin') {
+            $book->delete();
+            return redirect('/books');
+        } else {
+            return response(null, '401');
+        }
     }
 
     /**
