@@ -14,17 +14,18 @@ A simple library projects using **Laravel queues**, **TDD** && **Vuejs**
 
 - **Copy the `.env.example` file wit the name of `.env` using:**
 
-`cp .env.example .env`
+`#cp .env.example .env`
 
 you need to add your database in the .env file
 
 - **Run the key generate command**
 
-`php artisan key:generate`
+`#php artisan key:generate`
 
 - **Migrate && Run**
 
-`php artisan migrate`
-`php artisan run`
+`#php artisan migrate`
+
+`#php artisan run`
 
 
