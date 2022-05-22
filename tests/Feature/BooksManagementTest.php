@@ -11,7 +11,7 @@ class BooksManagementTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function can_add_a_book()
+    public function admin_can_add_a_book()
     {
         $response = $this->post('/books', $this->validData());
 
@@ -22,17 +22,7 @@ class BooksManagementTest extends TestCase
     }
 
     /** @test */
-    public function field_required()
-    {
-        collect(['title','author', 'year'])->each(function($field) {
-            $response = $this->post('/books', array_merge($this->validData(), [$field => '']));
-            $response->assertSessionHasErrors($field);
-            $this->assertCount(0, Book::all());
-        });
-    }
-
-    /** @test */
-    public function a_book_can_be_updated()
+    public function admin_can_update_a_book()
     {
         $this->post('/books', $this->validData());
 
@@ -44,7 +34,7 @@ class BooksManagementTest extends TestCase
     }
 
     /** @test */
-    public function a_book_can_be_deleted()
+    public function admin_can_delete_a_book()
     {
         $this->post('/books', $this->validData());
 
@@ -54,6 +44,28 @@ class BooksManagementTest extends TestCase
         $response = $this->delete($book->path());
         $this->assertCount(0, Book::all());
         $response->assertRedirect('/books');
+    }
+
+    /** test */
+    public function authorized_user_can_checkout_book()
+    {
+
+    }
+
+    /** test */
+    public function authorized_user_can_checkin_book()
+    {
+
+    }
+
+    /** @test */
+    public function field_required()
+    {
+        collect(['title','author', 'year'])->each(function($field) {
+            $response = $this->post('/books', array_merge($this->validData(), [$field => '']));
+            $response->assertSessionHasErrors($field);
+            $this->assertCount(0, Book::all());
+        });
     }
 
     private function validData() {
