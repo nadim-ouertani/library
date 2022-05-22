@@ -28,4 +28,10 @@ you need to add your database in the .env file
 
 `#php artisan run`
 
+- **To run the Features && Unit test please add this two lines in your `phpunit.xml`**
+
+`<server name="DB_CONNECTION" value="sqlite"/>`
+
+`<server name="DB_DATABASE" value=":memory:"/>`
+
 
